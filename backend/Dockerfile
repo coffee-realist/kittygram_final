@@ -12,7 +12,6 @@ COPY requirements.txt .
 RUN pip install --upgrade pip && \
     pip install -r requirements.txt --no-cache-dir
 
-# Устанавливаем gunicorn отдельно
 RUN pip install gunicorn==21.2.0
 
 COPY . .
