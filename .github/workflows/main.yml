@@ -34,6 +34,8 @@ jobs:
       run: |
         cd backend
         pip install -r requirements.txt
+        # Устанавливаем дополнительные пакеты для тестов
+        pip install gunicorn==21.2.0
 
     - name: Lint with ruff
       run: |
@@ -43,13 +45,17 @@ jobs:
 
     - name: Run backend tests
       env:
-        SECRET_KEY: test-key
+        SECRET_KEY: test-key-123456789012345678901234567890
         DEBUG: "True"
         ALLOWED_HOSTS: localhost,127.0.0.1
-        DATABASE_URL: postgres://kittygram_user:kittygram_password@localhost:5432/kittygram
+        POSTGRES_DB: kittygram
+        POSTGRES_USER: kittygram_user
+        POSTGRES_PASSWORD: kittygram_password
+        DB_HOST: localhost
+        DB_PORT: 5432
       run: |
         cd backend
-        python manage.py test
+        python manage.py test --noinput
 
     - name: Set up Node.js
       uses: actions/setup-node@v3
@@ -120,6 +126,10 @@ jobs:
         token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         message: |
           Kittygram CI/CD успешно завершен!
+          
           Образы обновлены на Docker Hub
           Репозиторий: ${{ github.repository }}
           Коммит: ${{ github.sha }}
+          Автор: ${{ github.actor }}
+          
+          Статус: SUCCESS
